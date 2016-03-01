@@ -15,6 +15,8 @@
 		6FA52BD81C85CF30002750A0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6FA52BD61C85CF30002750A0 /* LaunchScreen.storyboard */; };
 		6FA52BE31C85CF30002750A0 /* SSColorfulRefreshTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA52BE21C85CF30002750A0 /* SSColorfulRefreshTests.m */; };
 		6FA52BEE1C85CF30002750A0 /* SSColorfulRefreshUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA52BED1C85CF30002750A0 /* SSColorfulRefreshUITests.m */; };
+		6FA52BFF1C85D0C9002750A0 /* SSColorfulRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA52BFE1C85D0C9002750A0 /* SSColorfulRefresh.m */; };
+		6FA52C021C85D0E7002750A0 /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA52C011C85D0E7002750A0 /* DemoViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,10 @@
 		6FA52BE91C85CF30002750A0 /* SSColorfulRefreshUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SSColorfulRefreshUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FA52BED1C85CF30002750A0 /* SSColorfulRefreshUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SSColorfulRefreshUITests.m; sourceTree = "<group>"; };
 		6FA52BEF1C85CF30002750A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6FA52BFD1C85D0C9002750A0 /* SSColorfulRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSColorfulRefresh.h; sourceTree = "<group>"; };
+		6FA52BFE1C85D0C9002750A0 /* SSColorfulRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSColorfulRefresh.m; sourceTree = "<group>"; };
+		6FA52C001C85D0E7002750A0 /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
+		6FA52C011C85D0E7002750A0 /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,8 +107,11 @@
 		6FA52BC71C85CF30002750A0 /* SSColorfulRefresh */ = {
 			isa = PBXGroup;
 			children = (
+				6FA52BFC1C85D0B8002750A0 /* Class */,
 				6FA52BCB1C85CF30002750A0 /* AppDelegate.h */,
 				6FA52BCC1C85CF30002750A0 /* AppDelegate.m */,
+				6FA52C001C85D0E7002750A0 /* DemoViewController.h */,
+				6FA52C011C85D0E7002750A0 /* DemoViewController.m */,
 				6FA52BCE1C85CF30002750A0 /* ViewController.h */,
 				6FA52BCF1C85CF30002750A0 /* ViewController.m */,
 				6FA52BD11C85CF30002750A0 /* Main.storyboard */,
@@ -138,6 +147,15 @@
 				6FA52BEF1C85CF30002750A0 /* Info.plist */,
 			);
 			path = SSColorfulRefreshUITests;
+			sourceTree = "<group>";
+		};
+		6FA52BFC1C85D0B8002750A0 /* Class */ = {
+			isa = PBXGroup;
+			children = (
+				6FA52BFD1C85D0C9002750A0 /* SSColorfulRefresh.h */,
+				6FA52BFE1C85D0C9002750A0 /* SSColorfulRefresh.m */,
+			);
+			path = Class;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,7 +289,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FA52BD01C85CF30002750A0 /* ViewController.m in Sources */,
+				6FA52BFF1C85D0C9002750A0 /* SSColorfulRefresh.m in Sources */,
 				6FA52BCD1C85CF30002750A0 /* AppDelegate.m in Sources */,
+				6FA52C021C85D0E7002750A0 /* DemoViewController.m in Sources */,
 				6FA52BCA1C85CF30002750A0 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -496,6 +516,7 @@
 				6FA52BF41C85CF30002750A0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6FA52BF51C85CF30002750A0 /* Build configuration list for PBXNativeTarget "SSColorfulRefreshTests" */ = {
 			isa = XCConfigurationList;
@@ -504,6 +525,7 @@
 				6FA52BF71C85CF30002750A0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6FA52BF81C85CF30002750A0 /* Build configuration list for PBXNativeTarget "SSColorfulRefreshUITests" */ = {
 			isa = XCConfigurationList;
@@ -512,6 +534,7 @@
 				6FA52BFA1C85CF30002750A0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
