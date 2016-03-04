@@ -7,34 +7,30 @@
 //
 
 #import "SSColorfulRefresh.h"
-#define kColorfulRefreshBorderLength 50
 
-typedef NS_ENUM(NSInteger,SSColorfulItemPosition) {
-    SSColorfulItemPositionLeftTop,
-    SSColorfulItemPositionLeftCenter,
-    SSColorfulItemPositionLeftBottom,
-    SSColorfulItemPositionRightTop,
-    SSColorfulItemPositionRightCenter,
-    SSColorfulItemPositionRightBottom,
-};
+static const CGFloat kColorfulRefreshWidth = 50.0;
 
-@interface SSColorfulItem : UIView
+typedef struct {
+    CGFloat minBorderLen;
+    CGFloat middleBorderLen;
+    CGFloat maxBorderLen;
+}TriangleBorder;
 
-@property (nonatomic,strong) UIColor *color;
-@property (nonatomic,assign,readonly) SSColorfulItemPosition position;
+@implementation SSColorfulItem {
+    TriangleBorder _border;
+}
 
-- (instancetype)initWithFrame:(CGRect)frame originalColor:(UIColor *)color position:(SSColorfulItemPosition)position;
-
-@end
-
-
-@implementation SSColorfulItem
-
-- (instancetype)initWithFrame:(CGRect)frame originalColor:(UIColor *)color position:(SSColorfulItemPosition)position {
-    self = [super initWithFrame:frame];
+- (instancetype)initWithCenter:(CGPoint)point originalColor:(UIColor *)color position:(SSColorfulItemPosition)position {
+    self = [super init];
     if (self) {
+        self.bounds = CGRectMake(0, 0, kColorfulRefreshWidth, kColorfulRefreshWidth);
+        self.center = point;
         _color = color;
         _position = position;
+        _border.middleBorderLen = kColorfulRefreshWidth/2;
+        _border.minBorderLen = _border.middleBorderLen*tan(M_PI/6);
+        _border.maxBorderLen = 2*_border.minBorderLen;
+        self.backgroundColor = [UIColor clearColor];
     }
     return self;
 }
@@ -46,23 +42,44 @@ typedef NS_ENUM(NSInteger,SSColorfulItemPosition) {
 
 
 - (void)drawRect:(CGRect)rect {
+    CGPoint center = CGPointMake(kColorfulRefreshWidth/2, kColorfulRefreshWidth/2);
     CGPoint minPoint,middlePoint,maxPoint;
     switch (self.position) {
-        case SSColorfulItemPositionLeftBottom:
-            
+        case SSColorfulItemPositionLeftBottom: {
+            minPoint = CGPointMake(kColorfulRefreshWidth/2, kColorfulRefreshWidth);
+            middlePoint = CGPointMake(center.x-_border.middleBorderLen*cos(M_PI/6), 3/4.0*kColorfulRefreshWidth);
+            maxPoint = CGPointMake(center.x-_border.maxBorderLen*sin(M_PI/6), center.y);
+        }
             break;
-        case SSColorfulItemPositionLeftCenter:
-            
+        case SSColorfulItemPositionLeftCenter: {
+            minPoint = CGPointMake(center.x-_border.middleBorderLen*cos(M_PI/6), 3/4.0*kColorfulRefreshWidth);
+            middlePoint = CGPointMake(center.x-_border.middleBorderLen*cos(M_PI/6), kColorfulRefreshWidth/4);
+            maxPoint = CGPointMake(center.x-_border.minBorderLen*sin(M_PI/6), kColorfulRefreshWidth/4);
+        }
             break;
-        case SSColorfulItemPositionLeftTop:
-
+        case SSColorfulItemPositionLeftTop: {
+            minPoint = CGPointMake(center.x-_border.middleBorderLen*cos(M_PI/6), kColorfulRefreshWidth/4);
+            middlePoint = CGPointMake(center.x, 0);
+            maxPoint = CGPointMake(center.x+_border.minBorderLen*sin(M_PI/6),kColorfulRefreshWidth/4);
+        }
             break;
-        case SSColorfulItemPositionRightBottom:
-            
+        case SSColorfulItemPositionRightBottom: {
+            minPoint = CGPointMake(center.x+_border.middleBorderLen*cos(M_PI/6),3/4.0*kColorfulRefreshWidth);
+            middlePoint = CGPointMake(kColorfulRefreshWidth/2, kColorfulRefreshWidth);
+            maxPoint = CGPointMake(center.x-_border.minBorderLen*sin(M_PI/6), 3/4.0*kColorfulRefreshWidth);
+        }
             break;
-        case SSColorfulItemPositionRightCenter:
+        case SSColorfulItemPositionRightCenter: {
+            minPoint = CGPointMake(center.x+_border.middleBorderLen*cos(M_PI/6), kColorfulRefreshWidth/4);
+            middlePoint = CGPointMake(center.x+_border.middleBorderLen*cos(M_PI/6),3/4.0*kColorfulRefreshWidth);
+            maxPoint = CGPointMake(center.x+_border.minBorderLen*sin(M_PI/6),3/4.0*kColorfulRefreshWidth);
+        }
             break;
-        case SSColorfulItemPositionRightTop:
+        case SSColorfulItemPositionRightTop: {
+            minPoint = CGPointMake(center.x ,0);
+            middlePoint = CGPointMake(center.x+_border.middleBorderLen*cos(M_PI/6), kColorfulRefreshWidth/4);
+            maxPoint = CGPointMake(center.x+_border.maxBorderLen*sin(M_PI/6), center.y);
+        }
             break;
     }
     CGContextRef ctx = UIGraphicsGetCurrentContext();
