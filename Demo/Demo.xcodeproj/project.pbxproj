@@ -15,7 +15,8 @@
 		6F77F4961C8A7344008C2330 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F77F4941C8A7344008C2330 /* LaunchScreen.storyboard */; };
 		6F77F4A11C8A7344008C2330 /* DemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F77F4A01C8A7344008C2330 /* DemoTests.m */; };
 		6F77F4AC1C8A7344008C2330 /* DemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F77F4AB1C8A7344008C2330 /* DemoUITests.m */; };
-		6F77F4BC1C8A7352008C2330 /* SSColorfulRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F77F4BB1C8A7352008C2330 /* SSColorfulRefresh.m */; };
+		6F77F4BF1C8A74B1008C2330 /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F77F4BE1C8A74B1008C2330 /* DemoViewController.m */; };
+		6F77F4C31C8A7547008C2330 /* SSColorfulRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F77F4C21C8A7547008C2330 /* SSColorfulRefresh.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,8 +53,10 @@
 		6F77F4A71C8A7344008C2330 /* DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F77F4AB1C8A7344008C2330 /* DemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoUITests.m; sourceTree = "<group>"; };
 		6F77F4AD1C8A7344008C2330 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6F77F4BA1C8A7352008C2330 /* SSColorfulRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSColorfulRefresh.h; sourceTree = "<group>"; };
-		6F77F4BB1C8A7352008C2330 /* SSColorfulRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSColorfulRefresh.m; sourceTree = "<group>"; };
+		6F77F4BD1C8A74B1008C2330 /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
+		6F77F4BE1C8A74B1008C2330 /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
+		6F77F4C11C8A7547008C2330 /* SSColorfulRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSColorfulRefresh.h; sourceTree = "<group>"; };
+		6F77F4C21C8A7547008C2330 /* SSColorfulRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSColorfulRefresh.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,11 +107,13 @@
 		6F77F4851C8A7343008C2330 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
-				6F77F4B91C8A7352008C2330 /* Class */,
+				6F77F4C01C8A7547008C2330 /* SSColorfulRefresh */,
 				6F77F4891C8A7343008C2330 /* AppDelegate.h */,
 				6F77F48A1C8A7343008C2330 /* AppDelegate.m */,
 				6F77F48C1C8A7343008C2330 /* ViewController.h */,
 				6F77F48D1C8A7343008C2330 /* ViewController.m */,
+				6F77F4BD1C8A74B1008C2330 /* DemoViewController.h */,
+				6F77F4BE1C8A74B1008C2330 /* DemoViewController.m */,
 				6F77F48F1C8A7343008C2330 /* Main.storyboard */,
 				6F77F4921C8A7344008C2330 /* Assets.xcassets */,
 				6F77F4941C8A7344008C2330 /* LaunchScreen.storyboard */,
@@ -144,14 +149,14 @@
 			path = DemoUITests;
 			sourceTree = "<group>";
 		};
-		6F77F4B91C8A7352008C2330 /* Class */ = {
+		6F77F4C01C8A7547008C2330 /* SSColorfulRefresh */ = {
 			isa = PBXGroup;
 			children = (
-				6F77F4BA1C8A7352008C2330 /* SSColorfulRefresh.h */,
-				6F77F4BB1C8A7352008C2330 /* SSColorfulRefresh.m */,
+				6F77F4C11C8A7547008C2330 /* SSColorfulRefresh.h */,
+				6F77F4C21C8A7547008C2330 /* SSColorfulRefresh.m */,
 			);
-			name = Class;
-			path = ../../Class;
+			name = SSColorfulRefresh;
+			path = ../../SSColorfulRefresh;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -285,9 +290,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F77F48E1C8A7343008C2330 /* ViewController.m in Sources */,
-				6F77F4BC1C8A7352008C2330 /* SSColorfulRefresh.m in Sources */,
 				6F77F48B1C8A7343008C2330 /* AppDelegate.m in Sources */,
+				6F77F4BF1C8A74B1008C2330 /* DemoViewController.m in Sources */,
 				6F77F4881C8A7343008C2330 /* main.m in Sources */,
+				6F77F4C31C8A7547008C2330 /* SSColorfulRefresh.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

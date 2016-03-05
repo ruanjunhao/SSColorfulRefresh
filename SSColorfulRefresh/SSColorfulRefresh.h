@@ -11,7 +11,7 @@
 
 @interface SSColorfulRefresh : UIControl
 
-//the array count must be 6.
+//the count of color must be 6.
 //clockwise.
 
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView
@@ -20,7 +20,5 @@
 - (void)beginRefreshing;
 
 - (void)endRefreshing;
-
-@property (nonatomic,assign,readonly,getter=isRefreshing) BOOL refreshing;
 
 @end

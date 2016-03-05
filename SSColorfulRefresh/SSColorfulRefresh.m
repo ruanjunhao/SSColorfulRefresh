@@ -142,6 +142,7 @@ static const CGFloat kColorfulRefreshTargetHeight = 70;
 @interface SSColorfulRefresh ()
 
 @property (nonatomic,strong) NSMutableArray *colors;
+@property (nonatomic,strong) NSArray *originalColors;
 @property (nonatomic,  weak) UIScrollView *attachScrollView;
 @property (nonatomic,strong) NSTimer *timer;
 @property (nonatomic,assign) NSInteger flagCount;
@@ -172,6 +173,7 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
         self.backgroundColor = [UIColor whiteColor];
         [self.attachScrollView addSubview:self];
         [self.attachScrollView addObserver:self forKeyPath:ObservingKeyPath options:NSKeyValueObservingOptionNew context:NULL];
+        _originalColors = [colors copy];
         _colors = [[NSMutableArray alloc]initWithCapacity:6];
         _colors[0] = colors[2];
         _colors[1] = colors[3];
@@ -219,9 +221,10 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
 }
 
 - (void)updateColor {
+    
     for (NSInteger i = 0; i<self.colors.count; i++) {
         SSColorfulItem *item = [self viewWithTag:i+10000];
-        item.color = _colors[(self.flagCount+i)%6];
+        item.color = self.originalColors[(self.flagCount+i)%6];
     }
     self.flagCount++;
 }
