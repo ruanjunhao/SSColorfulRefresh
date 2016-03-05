@@ -1,18 +1,18 @@
 //
-//  SSColorfulRefreshTests.m
-//  SSColorfulRefreshTests
+//  DemoTests.m
+//  DemoTests
 //
-//  Created by Mrss on 16/3/1.
+//  Created by Mrss on 16/3/5.
 //  Copyright © 2016年 expai. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
 
-@interface SSColorfulRefreshTests : XCTestCase
+@interface DemoTests : XCTestCase
 
 @end
 
-@implementation SSColorfulRefreshTests
+@implementation DemoTests
 
 - (void)setUp {
     [super setUp];
