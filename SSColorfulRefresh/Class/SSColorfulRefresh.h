@@ -9,35 +9,18 @@
 #import <UIKit/UIKit.h>
 
 
-typedef NS_ENUM(NSInteger,SSColorfulItemPosition) {
-    SSColorfulItemPositionLeftTop,
-    SSColorfulItemPositionLeftCenter,
-    SSColorfulItemPositionLeftBottom,
-    SSColorfulItemPositionRightTop,
-    SSColorfulItemPositionRightCenter,
-    SSColorfulItemPositionRightBottom,
-};
-
-@interface SSColorfulItem : UIView
-
-@property (nonatomic,strong) UIColor *color;
-@property (nonatomic,assign) NSInteger currentColorIndex;
-@property (nonatomic,assign,readonly) SSColorfulItemPosition position;
-
-- (instancetype)initWithCenter:(CGPoint)point originalColor:(UIColor *)color position:(SSColorfulItemPosition)position;
-
-@end
-
-
 @interface SSColorfulRefresh : UIControl
 
+//the array count must be 6.
+//clockwise.
+
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView
-                            colors:(NSArray <UIColor *> *)colors; //the array count must be 6.
+                            colors:(NSArray <UIColor *> *)colors;
 
 - (void)beginRefreshing;
 
 - (void)endRefreshing;
 
-@property (nonatomic,assign,readonly) BOOL refreshing;
+@property (nonatomic,assign,readonly,getter=isRefreshing) BOOL refreshing;
 
 @end
