@@ -138,11 +138,14 @@ typedef struct {
 static const NSInteger kColorfulItemBaseTag = 10000;
 static const NSTimeInterval kColorfulRefreshUpdateTimeInterval = 0.2;
 static const CGFloat kColorfulRefreshTargetHeight = 70;
+static NSString *const  ObservingKeyPath = @"contentOffset";
 
 @interface SSColorfulRefresh ()
 
-@property (nonatomic,strong) NSMutableArray *colors;
+@property (nonatomic,strong) NSArray *colors;
 @property (nonatomic,strong) NSArray *originalColors;
+@property (nonatomic,strong) NSMutableArray *items;
+@property (nonatomic,strong) NSArray *originalItems;
 @property (nonatomic,  weak) UIScrollView *attachScrollView;
 @property (nonatomic,strong) NSTimer *timer;
 @property (nonatomic,assign) NSInteger flagCount;
@@ -150,7 +153,6 @@ static const CGFloat kColorfulRefreshTargetHeight = 70;
 
 @end
 
-static NSString *const  ObservingKeyPath = @"contentOffset";
 
 @implementation SSColorfulRefresh
 
@@ -174,19 +176,17 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
         [self.attachScrollView addSubview:self];
         [self.attachScrollView addObserver:self forKeyPath:ObservingKeyPath options:NSKeyValueObservingOptionNew context:NULL];
         _originalColors = [colors copy];
-        _colors = [[NSMutableArray alloc]initWithCapacity:6];
-        _colors[0] = colors[2];
-        _colors[1] = colors[3];
-        _colors[2] = colors[1];
-        _colors[3] = colors[4];
-        _colors[4] = colors[0];
-        _colors[5] = colors[5];
+        
+        _items = [[NSMutableArray alloc]initWithCapacity:6];
+        _colors = @[colors[2],colors[3],colors[1],colors[4],colors[0],colors[5]];
         [_colors enumerateObjectsUsingBlock:^(UIColor *color, NSUInteger idx, BOOL *stop) {
             SSColorfulItemPosition position = (SSColorfulItemPosition)idx;
             SSColorfulItem *item = [[SSColorfulItem alloc]initWithCenter:CGPointMake(CGRectGetWidth(self.frame)/2, 365-20*idx) originalColor:[color colorWithAlphaComponent:0] position:position];
             item.tag = idx+10000;
             [self addSubview:item];
+            [_items addObject:item];
         }];
+        _originalItems = @[_items[4],_items[2],_items[0],_items[1],_items[3],_items[5]];
     }
     return self;
 }
@@ -197,6 +197,7 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
         if (offsetY > 0) {
             return;
         }
+        NSLog(@"%lf",offsetY);
         CGFloat f = fabs(offsetY)/kColorfulRefreshTargetHeight;
         [_colors enumerateObjectsUsingBlock:^(UIColor *color, NSUInteger idx, BOOL *stop) {
             SSColorfulItem *item = [self viewWithTag:idx+10000];
@@ -221,11 +222,9 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
 }
 
 - (void)updateColor {
-    
-    for (NSInteger i = 0; i<self.colors.count; i++) {
-        SSColorfulItem *item = [self viewWithTag:i+10000];
-        item.color = self.originalColors[(self.flagCount+i)%6];
-    }
+    [self.originalItems enumerateObjectsUsingBlock:^(SSColorfulItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
+        item.color = self.originalColors[(self.flagCount+idx)%6];
+    }];
     self.flagCount++;
 }
 
@@ -242,7 +241,7 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
 - (void)endRefreshing {
     [self.timer setFireDate:[NSDate distantFuture]];
     self.flagCount = 0;
-    
+    self.trigger = NO;
     
     for (NSInteger i = self.colors.count-1; i>=0; i--) {
         SSColorfulItem *item = [self viewWithTag:i+10000];
@@ -250,18 +249,15 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
             item.center = CGPointMake(item.center.x, item.center.y-200);
         } completion:nil];
     }
-    [self performSelector:@selector(gogo) withObject:nil afterDelay:0.75];
-    
-    
-    
+    [self performSelector:@selector(back) withObject:nil afterDelay:0.75];
 }
 
-- (void)gogo {
+- (void)back {
     [self.attachScrollView setContentOffset:CGPointZero animated:YES];
-    self.trigger = NO;
 }
 
 - (void)dealloc {
+    [self.attachScrollView removeObserver:self forKeyPath:ObservingKeyPath context:NULL];
     [_timer invalidate];
     _timer = nil;
     NSLog(@"%s",__func__);
