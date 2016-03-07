@@ -199,15 +199,15 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
         }
         NSLog(@"%lf",offsetY);
         CGFloat f = fabs(offsetY)/kColorfulRefreshTargetHeight;
-        [_colors enumerateObjectsUsingBlock:^(UIColor *color, NSUInteger idx, BOOL *stop) {
-            SSColorfulItem *item = [self viewWithTag:idx+10000];
-            item.color = [color colorWithAlphaComponent:f];
-            if (item.center.y < 365) {
-                item.center = CGPointMake(item.center.x, item.center.y+f);
-            }
-        }];
-        if (fabs(offsetY) >= kColorfulRefreshTargetHeight) {
-            
+        
+        if (fabs(offsetY) < kColorfulRefreshTargetHeight) {
+            [_colors enumerateObjectsUsingBlock:^(UIColor *color, NSUInteger idx, BOOL *stop) {
+                SSColorfulItem *item = [self viewWithTag:idx+10000];
+                item.color = [color colorWithAlphaComponent:f];
+                if (item.center.y < 365) {
+                    item.center = CGPointMake(item.center.x, item.center.y+f);
+                }
+            }];
         }
         
         if (!self.attachScrollView.dragging && self.attachScrollView.decelerating && !self.trigger) {
