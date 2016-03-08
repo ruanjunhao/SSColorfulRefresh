@@ -1,5 +1,5 @@
 # SSColorfulRefresh
-![](https://raw.githubusercontent.com/immrss/SSTableViewPopover/master/Demo.gif)
+![](https://raw.githubusercontent.com/immrss/SSColorfulRefresh/master/Demo.gif)
 
 ## Usage
 ```objective-c
