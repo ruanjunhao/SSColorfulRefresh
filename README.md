@@ -5,7 +5,7 @@
 ```objective-c
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //Initilize tableview
+    //initilize tableview
     NSArray *array = @[[UIColor colorWithRed:175/255.0 green:18/255.0 blue:88/255.0 alpha:1],
                        [UIColor colorWithRed:244/255.0 green:13/255.0 blue:100/255.0 alpha:1],
                        [UIColor colorWithRed:90/255.0 green:13/255.0 blue:67/255.0 alpha:1],
@@ -17,7 +17,7 @@
     [self.colorRefresh addTarget:self action:@selector(refreshAction:) forControlEvents:UIControlEventValueChanged];
 }
 - (void)refreshAction:(SSColorfulRefresh *)refresh {
-    //
+    //refresh data
 }
 
 ```
