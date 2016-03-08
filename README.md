@@ -2,7 +2,6 @@
 ![](https://raw.githubusercontent.com/immrss/SSTableViewPopover/master/Demo.gif)
 
 ## Usage
-You can set nil array to use default colors.
 ```objective-c
 NSArray *array = @[[UIColor colorWithRed:175/255.0 green:18/255.0 blue:88/255.0 alpha:1],
                        [UIColor colorWithRed:244/255.0 green:13/255.0 blue:100/255.0 alpha:1],
@@ -15,6 +14,7 @@ self.colorRefresh = [[SSColorfulRefresh alloc]initWithScrollView:self.tableView 
 [self.colorRefresh addTarget:self action:@selector(refreshAction:) forControlEvents:UIControlEventValueChanged];
 
 ```
+See the demo for more information.
 
 ## License
 The project is available under the MIT license.
