@@ -142,7 +142,6 @@ typedef struct {
 static const NSInteger kColorfulItemBaseTag = 10000;
 static const NSTimeInterval kColorfulRefreshUpdateTimeInterval = 0.15;
 static const CGFloat kColorfulRefreshTargetHeight = 65.0;
-static const CGFloat kColorfulRefreshSpringHeight = 100.0;
 static NSString *const  ObservingKeyPath = @"contentOffset";
 
 @interface SSColorfulRefresh () <UIScrollViewDelegate>
@@ -153,35 +152,50 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
 @property (nonatomic,strong) NSArray *originalItems;
 @property (nonatomic,strong) NSMutableArray *originalPositions;
 @property (nonatomic,strong) NSArray *speeds;
-@property (nonatomic,  weak) UIScrollView *attachScrollView;
+@property (nonatomic,assign) UIScrollView *attachScrollView;
 @property (nonatomic,strong) NSTimer *timer;
 @property (nonatomic,assign) NSInteger flagCount;
-@property (nonatomic,assign) BOOL trigger;
+@property (nonatomic,assign) BOOL refreshing;
 
 @end
 
-
 @implementation SSColorfulRefresh
+
++ (NSArray *)defaultColors {
+    return @[
+             [UIColor colorWithRed:230/255.0 green:155/255.0 blue:3/255.0 alpha:1],
+             [UIColor colorWithRed:175/255.0 green:18/255.0 blue:88/255.0 alpha:1],
+             [UIColor colorWithRed:244/255.0 green:13/255.0 blue:100/255.0 alpha:1],
+             [UIColor colorWithRed:137/255.0 green:157/255.0 blue:192/255.0 alpha:1],
+             [UIColor colorWithRed:179/255.0 green:197/255.0 blue:135/255.0 alpha:1],
+             [UIColor colorWithRed:250/255.0 green:227/255.0 blue:113/255.0 alpha:1]
+             ];
+}
 
 - (NSTimer *)timer {
     if (_timer == nil) {
-        __weak typeof(self) weakSelf = self;
+        __weak SSColorfulRefresh *weakSelf = self;
         _timer = [NSTimer safe_timerWithTimeInterval:kColorfulRefreshUpdateTimeInterval block:^{
-            [weakSelf updateColor];
+            [weakSelf updateColors];
         } repeats:YES];
         [_timer setFireDate:[NSDate distantFuture]];
-        [[NSRunLoop currentRunLoop]addTimer:_timer forMode:NSRunLoopCommonModes];
     }
     return _timer;
+}
+
+- (void)startRunloop {
+    NSRunLoop *loop = [NSRunLoop currentRunLoop];
+    [loop addTimer:self.timer forMode:NSDefaultRunLoopMode];
+    [loop run];
 }
 
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView colors:(NSArray<UIColor *> *)colors {
     self = [super initWithFrame:CGRectMake(0, -400, CGRectGetWidth(scrollView.frame), 400)];
     if (self) {
-        _attachScrollView = scrollView;
         self.backgroundColor = [UIColor whiteColor];
-        [_attachScrollView addSubview:self];
-        [_attachScrollView addObserver:self forKeyPath:ObservingKeyPath options:NSKeyValueObservingOptionNew context:NULL];
+        _attachScrollView = scrollView;
+        [scrollView addSubview:self];
+        [scrollView addObserver:self forKeyPath:ObservingKeyPath options:NSKeyValueObservingOptionNew context:NULL];
         if (colors && colors.count == 6) {
             _originalColors = [colors copy];
         }
@@ -190,7 +204,7 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
         }
         _originalPositions = [[NSMutableArray alloc]initWithCapacity:6];
         _items = [[NSMutableArray alloc]initWithCapacity:6];
-        _colors = @[colors[2],colors[3],colors[1],colors[4],colors[0],colors[5]];
+        _colors = @[_originalColors[2],_originalColors[3],_originalColors[1],_originalColors[4],_originalColors[0],_originalColors[5]];
         [_colors enumerateObjectsUsingBlock:^(UIColor *color, NSUInteger idx, BOOL *stop) {
             SSColorfulItemPosition position = (SSColorfulItemPosition)idx;
             SSColorfulItem *item = [[SSColorfulItem alloc]initWithCenter:CGPointMake(CGRectGetWidth(self.frame)/2, 400-kColorfulRefreshTargetHeight-kColorfulRefreshWidth/2-30*idx) originalColor:color position:position];
@@ -206,19 +220,17 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
                     @(175.0/95.0),
                     @(205.0/100.0)];
         _originalItems = @[_items[4],_items[2],_items[0],_items[1],_items[3],_items[5]];
+        [self performSelectorInBackground:@selector(startRunloop) withObject:nil];
     }
     return self;
 }
 
-+ (NSArray *)defaultColors {
-    return @[
-             [UIColor colorWithRed:90/255.0 green:13/255.0 blue:67/255.0 alpha:1],
-             [UIColor colorWithRed:175/255.0 green:18/255.0 blue:88/255.0 alpha:1],
-             [UIColor colorWithRed:244/255.0 green:13/255.0 blue:100/255.0 alpha:1],
-             [UIColor colorWithRed:244/255.0 green:222/255.0 blue:41/255.0 alpha:1],
-             [UIColor colorWithRed:179/255.0 green:197/255.0 blue:135/255.0 alpha:1],
-             [UIColor colorWithRed:18/255.0 green:53/255.0 blue:85/255.0 alpha:1]
-             ];
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+    [super willMoveToSuperview:newSuperview];
+    if (!newSuperview) {
+        [self.attachScrollView removeObserver:self forKeyPath:ObservingKeyPath];
+        self.attachScrollView = nil;
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
@@ -226,7 +238,7 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
         return;
     }
     CGFloat offsetY = [change[NSKeyValueChangeNewKey]CGPointValue].y;
-    if (!self.trigger) {
+    if (!self.refreshing) {
         if (offsetY <= 0) {
             for (NSInteger i = 0; i<self.colors.count; i++) {
                 SSColorfulItem *item = [self viewWithTag:i+10000];
@@ -248,9 +260,8 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
     }
     if (offsetY <= -95) {
         if (!self.attachScrollView.dragging && self.attachScrollView.decelerating) {
-            if (!self.trigger) {
-                NSLog(@"trigger");
-                self.trigger = YES;
+            if (!self.refreshing) {
+                self.refreshing = YES;
                 [self.attachScrollView setContentOffset:CGPointMake(0, -75) animated:YES];
                 [self.timer setFireDate:[NSDate distantPast]];
                 [self sendActionsForControlEvents:UIControlEventValueChanged];
@@ -259,48 +270,50 @@ static NSString *const  ObservingKeyPath = @"contentOffset";
     }
 }
 
-- (void)updateColor {
-    [self.originalItems enumerateObjectsUsingBlock:^(SSColorfulItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
-        item.color = self.originalColors[(self.flagCount+idx)%6];
-    }];
-    self.flagCount++;
+- (void)updateColors {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.originalItems enumerateObjectsUsingBlock:^(SSColorfulItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
+            item.color = self.originalColors[(self.flagCount+idx)%6];
+        }];
+        self.flagCount++;
+    });
 }
 
 - (void)beginRefreshing {
-    
-    [_attachScrollView removeObserver:self forKeyPath:ObservingKeyPath context:NULL];
-    [_timer invalidate];
-    _timer = nil;
-    return;
+    if (self.refreshing) {
+        return;
+    }
+    self.refreshing = YES;
     for (NSInteger i = 0; i<self.colors.count; i++) {
         SSColorfulItem *item = [self viewWithTag:kColorfulItemBaseTag+i];
-        item.center = CGPointMake(CGRectGetWidth(self.frame)/2, 365);
+        item.center = CGPointMake(CGRectGetWidth(self.frame)/2, 400-20-35.0/2);
     }
-    [self.attachScrollView setContentOffset:CGPointMake(0, -kColorfulRefreshTargetHeight) animated:YES];
+    [self.attachScrollView setContentOffset:CGPointMake(0, -75) animated:YES];
     [self.timer setFireDate:[NSDate distantPast]];
-    
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)endRefreshing {
+    if (!self.refreshing) {
+        return;
+    }
     self.flagCount = 0;
-    self.trigger = NO;
+    self.refreshing = NO;
     [self.timer setFireDate:[NSDate distantFuture]];
     for (NSInteger i = self.colors.count-1; i>=0; i--) {
         SSColorfulItem *item = [self viewWithTag:i+10000];
-        [UIView animateWithDuration:0.75 delay:0.1*(self.colors.count-i-1) options:UIViewAnimationOptionCurveLinear animations:^{
+        [UIView animateWithDuration:0.75 delay:0.05*(self.colors.count-i-1) options:UIViewAnimationOptionCurveLinear animations:^{
             item.center = CGPointMake(item.center.x, item.originalCenterY);
         } completion:nil];
     }
-    [UIView animateWithDuration:0.25 delay:0.75 options:UIViewAnimationOptionCurveLinear animations:^{
+    [UIView animateWithDuration:0.25 delay:0.5 options:UIViewAnimationOptionCurveLinear animations:^{
         self.attachScrollView.contentOffset = CGPointZero;
     } completion:nil];
 }
 
-
 - (void)dealloc {
-    [_attachScrollView removeObserver:self forKeyPath:ObservingKeyPath context:NULL];
-    [_timer invalidate];
-    _timer = nil;
+    [self.attachScrollView removeObserver:self forKeyPath:ObservingKeyPath];
+    self.attachScrollView = nil;
 }
 
 

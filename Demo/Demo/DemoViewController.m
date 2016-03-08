@@ -12,7 +12,8 @@
 @interface DemoViewController () <UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic,strong) UITableView *tableView;
-@property (nonatomic,strong) NSMutableArray *data;
+
+@property (nonatomic,strong) NSArray *data;
 
 @property (nonatomic,strong) SSColorfulRefresh *colorRefresh;
 
@@ -25,33 +26,25 @@
     self.navigationItem.title = @"DEMO";
     self.view.backgroundColor = [UIColor whiteColor];
     self.automaticallyAdjustsScrollViewInsets = NO;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"End" style:UIBarButtonItemStyleDone target:self action:@selector(endRefreshing)],
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"Refresh" style:UIBarButtonItemStyleDone target:self action:@selector(beginRefresh)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"End" style:UIBarButtonItemStyleDone target:self action:@selector(endRefreshing)];
-    self.data = [[NSMutableArray alloc]init];
-    for (NSInteger i = 0; i<5; i++) {
-        [self.data addObject:[NSDate date]];
-    }
+    
+    self.data = @[[UIImage imageNamed:@"1.jpg"],
+                  [UIImage imageNamed:@"2.jpg"],
+                  [UIImage imageNamed:@"3.jpg"]];
+    
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-64) style:UITableViewStylePlain];
+    self.tableView.rowHeight = 235.0;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
-    
-    NSArray *array = @[[UIColor colorWithRed:175/255.0 green:18/255.0 blue:88/255.0 alpha:1],
-                       [UIColor colorWithRed:244/255.0 green:13/255.0 blue:100/255.0 alpha:1],
-                       [UIColor colorWithRed:90/255.0 green:13/255.0 blue:67/255.0 alpha:1],
-                       [UIColor colorWithRed:244/255.0 green:222/255.0 blue:41/255.0 alpha:1],
-                       [UIColor colorWithRed:179/255.0 green:197/255.0 blue:135/255.0 alpha:1],
-                       [UIColor colorWithRed:18/255.0 green:53/255.0 blue:85/255.0 alpha:1]
-                       ];
-    self.colorRefresh = [[SSColorfulRefresh alloc]initWithScrollView:self.tableView colors:array];
+    self.colorRefresh = [[SSColorfulRefresh alloc]initWithScrollView:self.tableView colors:nil];
     [self.colorRefresh addTarget:self action:@selector(refreshAction:) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)beginRefresh {
-    
     [self.colorRefresh beginRefreshing];
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
 }
 
 - (void)endRefreshing {
@@ -60,28 +53,10 @@
 
 - (void)refreshAction:(SSColorfulRefresh *)refresh {
     NSLog(@"trigger-----------------------");
-    
-//    for (NSInteger i = 0; i<5; i++) {
-//        [self.data addObject:[NSDate date]];
-//    }
-//    
-//    [self.tableView reloadData];
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.data.count;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 100;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -89,15 +64,15 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil) {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
-        cell.backgroundColor = [UIColor lightGrayColor];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 235.0)];
+        image.clipsToBounds = YES;
+        image.tag = 10000;
+        [cell.contentView addSubview:image];
     }
-    cell.textLabel.text = [NSString stringWithFormat:@"%@",self.data[indexPath.row]];
+    UIImageView *image = [cell.contentView viewWithTag:10000];
+    image.image = self.data[indexPath.row];
     return cell;
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [self.colorRefresh endRefreshing];
 }
 
 @end
