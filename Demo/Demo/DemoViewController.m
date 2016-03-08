@@ -36,9 +36,9 @@
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
     
-    NSArray *array = @[[UIColor colorWithRed:90/255.0 green:13/255.0 blue:67/255.0 alpha:1],
-                       [UIColor colorWithRed:175/255.0 green:18/255.0 blue:88/255.0 alpha:1],
+    NSArray *array = @[[UIColor colorWithRed:175/255.0 green:18/255.0 blue:88/255.0 alpha:1],
                        [UIColor colorWithRed:244/255.0 green:13/255.0 blue:100/255.0 alpha:1],
+                       [UIColor colorWithRed:90/255.0 green:13/255.0 blue:67/255.0 alpha:1],
                        [UIColor colorWithRed:244/255.0 green:222/255.0 blue:41/255.0 alpha:1],
                        [UIColor colorWithRed:179/255.0 green:197/255.0 blue:135/255.0 alpha:1],
                        [UIColor colorWithRed:18/255.0 green:53/255.0 blue:85/255.0 alpha:1]
@@ -48,7 +48,10 @@
 }
 
 - (void)beginRefresh {
+    
     [self.colorRefresh beginRefreshing];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
 }
 
 - (void)endRefreshing {
@@ -56,13 +59,13 @@
 }
 
 - (void)refreshAction:(SSColorfulRefresh *)refresh {
-    NSLog(@"trigger");
+    NSLog(@"trigger-----------------------");
     
-    for (NSInteger i = 0; i<5; i++) {
-        [self.data addObject:[NSDate date]];
-    }
-    
-    [self.tableView reloadData];
+//    for (NSInteger i = 0; i<5; i++) {
+//        [self.data addObject:[NSDate date]];
+//    }
+//    
+//    [self.tableView reloadData];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -86,10 +89,15 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil) {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
+        cell.backgroundColor = [UIColor lightGrayColor];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     cell.textLabel.text = [NSString stringWithFormat:@"%@",self.data[indexPath.row]];
     return cell;
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [self.colorRefresh endRefreshing];
 }
 
 @end

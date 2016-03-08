@@ -7,8 +7,11 @@
 //
 
 #import "ViewController.h"
+#import "DemoViewController.h"
+
 
 @interface ViewController ()
+
 
 @end
 
@@ -17,6 +20,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:[DemoViewController new]];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
